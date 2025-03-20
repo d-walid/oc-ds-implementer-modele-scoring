@@ -1,0 +1,3 @@
+Model,Hyperparams,Cost_cv,Train_time,Cost_test,Accuracy_test,AUC_test
+LogisticRegression,{'clf__C': 10},27135.4,133.49574995040894,25583,0.6883566655285108,0.7477401558334853
+RandomForestClassifier,"{'clf__max_depth': 10, 'clf__min_samples_split': 3, 'clf__n_estimators': 100}",28123.2,771.8398020267487,25052,0.7199486203925012,0.7304290741262629
