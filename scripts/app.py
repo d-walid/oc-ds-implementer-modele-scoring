@@ -16,7 +16,7 @@ df_path = os.path.join(BASE_DIR, "..", "data", "cleaned", "df.csv")
 df = pd.read_csv(df_path, sep=";", encoding="utf-8")
 
 clf = model.named_steps["clf"]
-feature_names = model.feature_names
+feature_names = df.drop(columns=["TARGET", "SK_ID_CURR"], errors="ignore").columns.tolist()
 coefficients = clf.coef_.flatten()
 coeff_df = pd.DataFrame({
   "feature": feature_names,
