@@ -12,11 +12,12 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(BASE_DIR, "..", "models", "LogisticRegression_model.joblib")
 model = joblib.load(model_path)
 
-df_path = os.path.join(BASE_DIR, "..", "data", "cleaned", "df.csv")
+df_path = os.path.join(BASE_DIR, "..", "data", "cleaned", "df_sample.csv")
 df = pd.read_csv(df_path, sep=";", encoding="utf-8")
 
 clf = model.named_steps["clf"]
 feature_names = df.drop(columns=["TARGET", "SK_ID_CURR"], errors="ignore").columns.tolist()
+
 coefficients = clf.coef_.flatten()
 coeff_df = pd.DataFrame({
   "feature": feature_names,
