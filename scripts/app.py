@@ -9,7 +9,7 @@ import os
 app = Flask(__name__)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-model_path = os.path.join(BASE_DIR, "..", "models", "LogisticRegression_model.joblib")
+model_path = os.path.join(BASE_DIR, "..", "models", "LGBMClassifier_model.joblib")
 model = joblib.load(model_path)
 
 df_path = os.path.join(BASE_DIR, "..", "data", "cleaned", "df_sample.csv")
@@ -18,14 +18,13 @@ df = pd.read_csv(df_path, sep=";", encoding="utf-8")
 clf = model.named_steps["clf"]
 feature_names = df.drop(columns=["TARGET", "SK_ID_CURR"], errors="ignore").columns.tolist()
 
-coefficients = clf.coef_.flatten()
-coeff_df = pd.DataFrame({
+importances = clf.feature_importances_
+importances_df = pd.DataFrame({
   "feature": feature_names,
-  "coefficients": coefficients,
-  "abs_coefficients": np.abs(coefficients)
+  "importance": importances
 })
-coeff_df = coeff_df.sort_values(by="abs_coefficients", ascending=False)
-coeff_df_top = coeff_df.head(10)[["feature", "coefficients"]].to_dict(orient="records")
+importances_df = importances_df.sort_values(by="importance", ascending=False)
+importances_df_top = importances_df.head(10)[["feature", "importance"]].to_dict(orient="records")
 
 
 @app.route("/")
@@ -51,7 +50,7 @@ def predict():
   return jsonify({
     "prediction" : prediction.tolist(),
     "proba_classe_1" : float(prediction_proba[0]),
-    "top_20_coefficients" : coeff_df_top
+    "top_20_feature_importance" : importances_df_top
     })
 
 if __name__ == "__main__":
