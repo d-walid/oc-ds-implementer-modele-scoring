@@ -4,7 +4,7 @@ from scripts.app import app, model, df
 def test_predict_endpoint():
     client = app.test_client()
     sample_client_id = df["SK_ID_CURR"].iloc[0]
-    response = client.post("/predict", json={"SK_ID_CURR": sample_client_id})
+    response = client.post("/predict", json={"SK_ID_CURR": int(sample_client_id)})
     data = response.get_json()
     assert response.status_code == 200
     assert "prediction" in data
