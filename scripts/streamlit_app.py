@@ -21,7 +21,7 @@ st.markdown("Cet outil permet d'évaluer la probabilité de défaut de paiement 
 
 
 def get_prediction(client_id):
-    api_url = "http://127.0.0.1:5000/predict"
+    api_url = "https://ocr-model-scoring-d21bdbd88983.herokuapp.com/predict"
     response = requests.post(api_url, json={"SK_ID_CURR": client_id})
     
     if response.status_code == 200:
@@ -65,10 +65,12 @@ if st.sidebar.button("Analyser ce client"):
                     y="feature",
                     orientation="h",
                     color="shap_value",
-                    color_continuous_scale=["#1E88E5", "white", "#D81B60"],
+                    color_continuous_scale=["#B22222", "white", "#1E88E5"], 
                     color_continuous_midpoint=0,    
                 )
                 fig.update_layout(coloraxis_showscale=False)
+                fig.update_yaxes(categoryorder="total ascending")
                 st.plotly_chart(fig)
+                
     except ValueError:
         st.error("Veuillez entrer un ID client valide.")
