@@ -11,3 +11,4 @@ gunicorn==23.0.0
 lightgbm==4.6.0
 streamlit==1.44.1
 flask==2.2.2
+werkzeug==2.3.7

@@ -8,7 +8,10 @@ libraries = [
     "scikit-learn",
     "shap",
     "mlflow",
-    "joblib"
+    "joblib",
+    "flask",
+    "lightgbm",
+    "streamlit"
 ]
 
 for lib in libraries:
