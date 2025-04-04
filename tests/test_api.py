@@ -1,4 +1,4 @@
-from scripts.app import model, df
+from scripts.app import app, model, df
 
 
 def test_predict_endpoint():
