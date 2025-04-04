@@ -26,6 +26,7 @@ importances_df = pd.DataFrame({
 importances_df = importances_df.sort_values(by="importance", ascending=False)
 importances_df_top = importances_df.head(10)[["feature", "importance"]].to_dict(orient="records")
 
+explainer = shap.TreeExplainer(clf)
 
 @app.route("/")
 def home():
@@ -40,17 +41,35 @@ def predict():
   
   sample = df[df["SK_ID_CURR"] == sk_id].copy()
   if sample.empty:
-    return jsonify({"erreur": "SK_ID_CURR introuvable."}), 404
+    return jsonify({"erreur": "Identifiant du client incorrect."}), 404
   
-  sample.drop(columns=["SK_ID_CURR", "TARGET"], inplace=True)
+  X = sample.copy()
+  X.drop(columns=["SK_ID_CURR", "TARGET"], inplace=True)
   
-  prediction = model.predict(sample)
-  prediction_proba = model.predict_proba(sample)[:, 1]
+  X_preprocessed = model[:-1].transform(X)
+  shap_values = explainer.shap_values(X_preprocessed)
+  
+  if isinstance(shap_values, list):
+    client_shap_values = shap_values[1][0]
+  else:
+    client_shap_values = shap_values[0]
+    
+  local_importance_df = pd.DataFrame({
+    "feature": feature_names,
+    "importance": np.abs(client_shap_values),
+    "shap_value": np.round(client_shap_values, 2)
+  })
+  local_importance_df = local_importance_df.sort_values(by="importance", ascending=False)
+  local_importance_df_top = local_importance_df.head(10)[["feature", "shap_value"]].to_dict(orient="records")
+  
+  prediction = model.predict(X)
+  prediction_proba = model.predict_proba(X)[:, 1]
   
   return jsonify({
     "prediction" : prediction.tolist(),
     "proba_classe_1" : float(prediction_proba[0]),
-    "top_20_feature_importance" : importances_df_top
+    "top_10_feature_importance" : importances_df_top,
+    "top_10_local_importance" : local_importance_df_top,
     })
 
 if __name__ == "__main__":
