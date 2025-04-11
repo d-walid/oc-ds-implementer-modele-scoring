@@ -63,10 +63,7 @@ if st.sidebar.button("Analyser ce client"):
                     top_features,
                     x="shap_value",
                     y="feature",
-                    orientation="h",
-                    color="shap_value",
-                    color_continuous_scale=["#B22222", "white", "#1E88E5"], 
-                    color_continuous_midpoint=0,    
+                    orientation="h" 
                 )
                 fig.update_layout(coloraxis_showscale=False)
                 fig.update_yaxes(categoryorder="total ascending")
